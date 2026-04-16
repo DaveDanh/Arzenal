@@ -3,7 +3,6 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
 
-    private float speed = 10f;
     private Rigidbody2D rb;
 
     void Awake()
@@ -13,7 +12,7 @@ public class Bullet : MonoBehaviour
 
     public void Launch(Vector2 direction)
     {
-        rb.linearVelocity = direction.normalized * speed;
+        rb.linearVelocity = direction;
         Destroy(gameObject, 5f);
     }
     void Update()

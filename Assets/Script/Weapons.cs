@@ -26,8 +26,29 @@ public class Weapons : MonoBehaviour
     private float nextFireTime;
     private Coroutine muzzleFlashRoutine;
 
+    [Header("Ammo && Reload")]
+    public int magazineSize = 15;
+    public int reloadTime = 2;
+    public int currentAmmo;
+    public static bool isReloading = false;
+    public bool isAmmoInfinity = true;
+    public int totalAmmo;
+
+
+    void Start(){
+        currentAmmo = magazineSize;
+    }
+
     void Update()
     {
+        if (isReloading){
+            return;
+        }
+        if ((Input.GetKeyDown(KeyCode.R) && currentAmmo < magazineSize) || (currentAmmo == 0))
+        {
+            StartCoroutine(ReloadRoutine());
+            return;
+        }
         bool wantsToFire =
             fireMode == FireMode.Auto
             ? Input.GetMouseButton(0)
@@ -62,6 +83,9 @@ public class Weapons : MonoBehaviour
 
     void Fire()
     {
+
+        currentAmmo--;
+
         Camera cam = Camera.main;
         if (cam == null)
         {
@@ -129,5 +153,28 @@ public class Weapons : MonoBehaviour
 
         muzzleFlash.SetActive(false);
         muzzleFlashRoutine = null;
+    }
+
+    IEnumerator ReloadRoutine(){
+        isReloading = true;
+        float elapsedTime = 0;
+
+        while (elapsedTime < reloadTime)
+        {
+            elapsedTime += Time.deltaTime;
+            
+            //animation reload
+            
+            yield return null;
+        }
+
+        if (isAmmoInfinity || totalAmmo >= magazineSize){
+            currentAmmo = magazineSize;
+            isReloading = false;
+        }
+        else {
+        currentAmmo = totalAmmo;
+        isReloading = false;
+        }
     }
 }
